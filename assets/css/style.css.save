@@ -1,0 +1,342 @@
+/* ------------------------------------------------
+   RESET + BASE
+--------------------------------------------------*/
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  font-family: "Inter", sans-serif;
+  background: #f6f9ff;
+  color: #1a1a1a;
+  scroll-behavior: smooth;
+}
+
+body {
+  padding-top: 140px;
+}
+
+/* ------------------------------------------------
+   FUTURE PAGE LOADER
+--------------------------------------------------*/
+#page-loader {
+  position: fixed;
+  inset: 0;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999999;
+  animation: fadeOut 0.8s ease 2.3s forwards;
+}
+
+.loader-ring {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 5px solid #0b3d91;
+  border-top-color: transparent;
+  animation: spin 1.2s linear infinite, pop 1.4s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.13); }
+  100% { transform: scale(1); }
+}
+@keyframes fadeOut {
+  to { opacity: 0; visibility: hidden; }
+}
+
+/* ------------------------------------------------
+   FLOATING FUTURISTIC GLASS HEADER
+--------------------------------------------------*/
+.header {
+  position: fixed;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 92%;
+  padding: 18px 40px;
+  border-radius: 22px;
+
+  backdrop-filter: blur(16px) saturate(160%);
+  background: rgba(255, 255, 255, 0.22);
+
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.18);
+
+  transition: all 400ms cubic-bezier(0.4, 0.0, 0.2, 1);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  z-index: 99999;
+}
+
+.header.shrink {
+  padding: 10px 26px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(28px) saturate(200%);
+  transform: translateX(-50%) scale(0.96);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.22);
+}
+
+/* Logo */
+.header .logo {
+  font-size: 22px;
+  letter-spacing: 1px;
+  font-weight: 700;
+  color: #0a2a66;
+  text-shadow: 0 0 20px rgba(11,61,145,0.35);
+  transition: 300ms ease;
+}
+
+.header.shrink .logo {
+  font-size: 18px;
+  opacity: 0.85;
+}
+
+/* Navigation */
+.header nav a {
+  margin-left: 22px;
+  font-size: 17px;
+  color: #0a2a66;
+  font-weight: 600;
+  text-decoration: none;
+  position: relative;
+  transition: 250ms ease;
+}
+
+.header nav a::after {
+  content: "";
+  position: absolute;
+  height: 2px;
+  width: 0;
+  bottom: -4px;
+  left: 0;
+  background: #0b3d91;
+  box-shadow: 0 0 8px #0b3d91;
+  transition: width 280ms ease;
+}
+
+.header nav a:hover::after {
+  width: 100%;
+}
+
+.header nav a:hover {
+  color: #0b3d91;
+  text-shadow: 0 0 12px rgba(11,61,145,0.4);
+}
+
+/* ------------------------------------------------
+   HERO SLIDER (MODERN)
+--------------------------------------------------*/
+.hero-slider {
+  width: 100%;
+  height: 88vh;
+  position: relative;
+}
+
+.hero-slider img {
+  width: 100%;
+  height: 88vh;
+  object-fit: cover;
+  filter: brightness(0.68);
+}
+
+.slide-text {
+  position: absolute;
+  bottom: 20%;
+  left: 6%;
+  color: white;
+}
+
+.hero-animate {
+  font-size: 52px;
+  font-weight: 800;
+  opacity: 0;
+  animation: slideUp 1s ease forwards 0.4s;
+}
+
+.hero-sub {
+  font-size: 20px;
+  opacity: 0;
+  animation: slideUp 1s ease forwards 0.8s;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(40px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* ------------------------------------------------
+   SECTIONS
+--------------------------------------------------*/
+.landing-section {
+  padding: 120px 7%;
+}
+
+.landing-section h2 {
+  font-size: 42px;
+  margin-bottom: 20px;
+  color: #0a2a66;
+  font-weight: 800;
+}
+
+/* ------------------------------------------------
+   SERVICES GRID
+--------------------------------------------------*/
+.landing-grid {
+  display: grid;
+  gap: 28px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.card {
+  background: white;
+  border-radius: 18px;
+  padding: 26px;
+  box-shadow: 0 12px 38px rgba(0,0,0,0.09);
+  transition: 300ms ease;
+}
+
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 18px 48px rgba(0,0,0,0.15);
+}
+
+/* ------------------------------------------------
+   PORTFOLIO GRID
+--------------------------------------------------*/
+.portfolio-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px,1fr));
+  gap: 30px;
+}
+
+.portfolio-card {
+  height: 230px;
+  border-radius: 16px;
+  background-size: cover;
+  background-position: center;
+  cursor: pointer;
+  filter: brightness(0.86);
+  transition: 300ms ease;
+}
+
+.portfolio-card:hover {
+  filter: brightness(1);
+  transform: scale(1.04);
+}
+
+/* ------------------------------------------------
+   FOOTER
+/* === Phase1: Smooth Reveal + Scroll Parallax (medium intensity) === */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: transform 700ms cubic-bezier(.2,.9,.3,1), opacity 700ms ease;
+  will-change: transform, opacity;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stagger effect */
+.card, .portfolio-card, .slide-text { transition-delay: 0s; }
+.card.visible { transition-delay: 120ms; }
+.portfolio-card.visible { transition-delay: 160ms; }
+.slide-text.visible { transition-delay: 120ms; }
+
+/* Parallax */
+.parallax { will-change: transform; transition: transform 220ms linear; }
+
+.hero-slider .swiper-slide img {
+  transition: transform 800ms ease-out;
+}
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .parallax,
+  .hero-slider .swiper-slide img {
+    transition: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}
+x--------------------------------------------------*/
+.footer {
+  background: #0b3d91;
+  color: white;
+  padding: 35px;
+  text-align: center;
+  margin-top: 40px;
+}
+
+/* ABOUT SECTION */
+.about-intro {
+  font-size: 20px;
+  max-width: 800px;
+  line-height: 1.6;
+  margin-bottom: 40px;
+}
+
+.about-grid {
+  display: grid;
+  gap: 30px;
+  grid-template-columns: repeat(auto-fit, minmax(260px,1fr));
+}
+
+.about-card {
+  background: white;
+  padding: 28px;
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+/* WORK SECTION */
+.portfolio-card {
+  position: relative;
+  overflow: hidden;
+  height: 260px;
+  border-radius: 18px;
+}
+
+.portfolio-info {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 18px;
+  background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
+  color: white;
+}
+
+/* CONTACT */
+.contact-box {
+  background: white;
+  padding: 35px;
+  max-width: 480px;
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+.contact-btn {
+  display: inline-block;
+  margin-top: 18px;
+  background: #0b3d91;
+  color: white;
+  padding: 12px 22px;
+  border-radius: 10px;
+  text-decoration: none;
+}
