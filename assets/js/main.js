@@ -22,11 +22,13 @@ document.addEventListener('DOMContentLoaded', function() {
       mobileMenuBtn.classList.toggle('active');
     });
 
-    // Close menu when clicking on links
+    // Close menu when clicking on links (mobile UX)
     navLinks.forEach(link => {
-      link.addEventListener('click', () => {
+      link.addEventListener('click', (ev) => {
+        // always close the mobile menu
         nav.classList.remove('active');
         mobileMenuBtn.classList.remove('active');
+        // unified smooth-scroll handler (registered below) will perform scrolling for same-page anchors
       });
     });
 
@@ -230,8 +232,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Campaign slides rotation (cycle portfolio campaign slides one by one)
   const campaignSlides = document.querySelectorAll('.campaign-slide');
-  if (campaignSlides.length) {
+  const workSection = document.getElementById('work');
+  if (campaignSlides.length && workSection) {
     let current = 0;
+    let rotationInterval = null;
 
     // utility to set highlighted slide
     function highlightSlide(index) {
@@ -254,13 +258,12 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // rotation control
-    let rotationInterval = null;
     function rotateOnce() {
       const next = (current + 1) % campaignSlides.length;
       highlightSlide(next);
     }
     function startRotation() {
-      if (rotationInterval) clearInterval(rotationInterval);
+      if (rotationInterval) return; // already running
       rotationInterval = setInterval(rotateOnce, 5000);
     }
     function pauseRotation() {
@@ -273,24 +276,52 @@ document.addEventListener('DOMContentLoaded', function() {
       if (!rotationInterval) startRotation();
     }
 
-    // initialize
+    // Intersection observer to start/stop rotation only when #work is visible
+    const workObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          // start rotation when section is visible
+          highlightSlide(current);
+          startRotation();
+        } else {
+          // pause rotation when section is not visible
+          pauseRotation();
+        }
+      });
+    }, { threshold: 0.25 });
+
+    workObserver.observe(workSection);
+
+    // initialize state (if section already in view, startRotation will be triggered by observer)
     highlightSlide(0);
-    startRotation();
   }
 });
 
 // ===== SMOOTH SCROLL FOR ANCHOR LINKS =====
+// Unified smooth scroll for same-page anchors with header offset and mobile nav close
 document.addEventListener('DOMContentLoaded', function() {
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
+      const href = this.getAttribute('href');
+      // If href is just '#' or empty, ignore
+      if (!href || href === '#') return;
+
+      const target = document.querySelector(href);
+      if (!target) return; // no in-page target, let default behavior (e.g., links to other pages)
+
       e.preventDefault();
-      const target = document.querySelector(this.getAttribute('href'));
-      if (target) {
-        target.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        });
-      }
+
+      const headerEl = document.querySelector('.header');
+      const offset = headerEl ? headerEl.offsetHeight + 12 : 80;
+      const top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+
+      window.scrollTo({ top, behavior: 'smooth' });
+
+      // Close mobile nav if open
+      const nav = document.querySelector('.header-nav');
+      const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+      if (nav && nav.classList.contains('active')) nav.classList.remove('active');
+      if (mobileMenuBtn && mobileMenuBtn.classList.contains('active')) mobileMenuBtn.classList.remove('active');
     });
   });
 });

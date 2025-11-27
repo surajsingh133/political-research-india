@@ -939,7 +939,19 @@ body {
   }
   
   .header-nav.active {
-    display: flex;
+    display: flex !important;
+    position: fixed;
+    top: 70px; /* below header */
+    left: 0;
+    right: 0;
+    background: rgba(255,255,255,0.98);
+    backdrop-filter: blur(14px);
+    padding: 20px;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 100000;
+    max-height: calc(100vh - 70px);
+    overflow-y: auto;
   }
   
   .nav-link {
@@ -952,6 +964,8 @@ body {
   
   .mobile-menu-btn {
     display: flex;
+    z-index: 100001; /* ensure button remains on top */
+    position: relative;
   }
   
   .logo-text {
@@ -1388,6 +1402,30 @@ body {
 .mobile-menu-btn.active span:nth-child(3) {
   transform: rotate(-45deg) translate(6px, -6px);
   background: #4ECDC4;
+}
+
+/* Ensure mobile nav always shows when active and sits above page content */
+@media (max-width: 768px) {
+  .header-nav.active {
+    display: flex !important;
+    position: fixed;
+    top: 70px; /* below header */
+    left: 0;
+    right: 0;
+    background: rgba(255,255,255,0.98);
+    backdrop-filter: blur(14px);
+    padding: 20px;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 100000;
+    max-height: calc(100vh - 70px);
+    overflow-y: auto;
+  }
+
+  .mobile-menu-btn {
+    z-index: 100001; /* ensure button remains on top */
+    position: relative;
+  }
 }
 
 /* Campaign slide rotation styles - show one campaign at a time but keep others visible and dimmed */
