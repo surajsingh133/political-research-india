@@ -1,56 +1,194 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <title>About Us — Political Research India</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <link rel="stylesheet" href="../assets/css/style.css">
+  <meta charset="utf-8" />
+  <title>About Us - Political Research India</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 
 <body>
-
-<header class="header">
-  <div class="logo">POLITICAL RESEARCH INDIA</div>
-  <nav>
-    <a href="../index.html">Home</a>
-    <a href="services.html">Services</a>
-    <a href="projects.html">Work</a>
-    <a href="about.html">About</a>
-  </nav>
-</header>
-
-<section class="hero" style="height:40vh; background:linear-gradient(rgba(11,61,145,0.85),rgba(11,61,145,0.7));">
-  <div class="hero-inner">
-    <h1>About Our Organisation</h1>
-    <p>Political consulting, research & field management across India.</p>
+  <div id="page-loader">
+    <div class="loader-ring"><span></span></div>
+    <p class="loader-text">Loading Strategic Solutions...</p>
   </div>
-</section>
 
-<section class="preview" style="padding-top:40px;">
-  <h2>Who We Are</h2>
-  <p>
-    Political Research India is a political consultancy specializing in 
-    end-to-end election management, campaign execution, and strategic political research.
-  </p>
+  <header class="header">
+    <div class="header-container">
+      <div class="logo">
+        <span class="logo-icon">🗳️</span>
+        <span class="logo-text">POLITICAL RESEARCH INDIA</span>
+        <span class="logo-tagline">Strategic Campaign Management</span>
+      </div>
+      <div class="mobile-menu-btn">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <nav class="header-nav">
+        <a href="index.html" class="nav-link">
+          <span class="nav-icon">🏠</span>
+          Home
+        </a>
+        <a href="about.html" class="nav-link active">
+          <span class="nav-icon">👥</span>
+          About
+        </a>
+        <a href="services.html" class="nav-link">
+          <span class="nav-icon">⚡</span>
+          Services
+        </a>
+        <a href="projects.html" class="nav-link">
+          <span class="nav-icon">🎯</span>
+          Work
+        </a>
+        <a href="index.html#contact" class="nav-link cta-button">
+          <span class="nav-icon">📞</span>
+          Contact
+        </a>
+      </nav>
+    </div>
+    <div class="header-accent"></div>
+  </header>
 
-  <h2 style="margin-top:40px;">Our Mission</h2>
-  <p>
-    To empower political leaders with actionable insights, structured field planning, 
-    and data-backed strategies to win modern elections.
-  </p>
+  <!-- About Hero Section -->
+  <section class="about-hero reveal">
+    <div class="hero-content">
+      <h1>About Political Research India</h1>
+      <p>Pioneering the future of political consulting with data-driven strategies and ground-level execution</p>
+    </div>
+  </section>
 
-  <h2 style="margin-top:40px;">Our Approach</h2>
-  <p>
-    We combine technology, data analytics, grassroots engagement, and precise 
-    communication strategies to deliver measurable impact.
-  </p>
-</section>
+  <!-- Company Overview -->
+  <section class="landing-section reveal">
+    <div class="section-header">
+      <h2 class="section-title">Our Organization</h2>
+      <p class="section-subtitle">Bridging the gap between public representatives and the public</p>
+    </div>
 
-<footer class="footer">
-  <p>© 2025 Political Research India | All Rights Reserved</p>
-</footer>
+    <div class="about-content">
+      <div class="about-text">
+        <p class="about-intro">
+          <strong>Political Research India</strong> is a professional political management consultancy that specializes in developing and executing end-to-end election strategies — from booth-level planning to large-scale digital campaigns.
+        </p>
+        
+        <p>
+          Our objective is to ensure that the leader's voice reaches the people and that citizens' concerns reach their elected representatives effectively. We combine deep grassroots insights with modern strategic approaches to deliver winning results.
+        </p>
 
-<script src="../assets/js/main.js"></script>
+        <div class="about-features">
+          <div class="feature">
+            <div class="feature-icon">🎯</div>
+            <div class="feature-content">
+              <h4>Strategic Excellence</h4>
+              <p>Data-driven strategies tailored to unique constituency dynamics</p>
+            </div>
+          </div>
+          <div class="feature">
+            <div class="feature-icon">📊</div>
+            <div class="feature-content">
+              <h4>Advanced Analytics</h4>
+              <p>Real-time insights and predictive modeling for informed decisions</p>
+            </div>
+          </div>
+          <div class="feature">
+            <div class="feature-icon">🌐</div>
+            <div class="feature-content">
+              <h4>Digital Integration</h4>
+              <p>Seamless blend of traditional and digital campaign methodologies</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="about-visual">
+        <div class="visual-card">
+          <div class="card-glow"></div>
+          <h3>Our Vision</h3>
+          <p>To empower leaders with data-driven insights and high-impact political strategies that shape modern democracy.</p>
+        </div>
+        <div class="visual-card">
+          <div class="card-glow"></div>
+          <h3>Our Mission</h3>
+          <p>To create transparent, measurable, and voter-centric political campaigns built on research, technology, and innovation.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Team Section -->
+  <section class="team-section reveal landing-section">
+    <div class="section-header">
+      <h2 class="section-title">Our Leadership Team</h2>
+      <p class="section-subtitle">Experienced professionals driving political success</p>
+    </div>
+    
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="team-avatar">VS</div>
+        <h3>Vishal Singh</h3>
+        <p class="team-role">Chief Executive Officer</p>
+        <p class="team-desc">Strategic leadership and client relations</p>
+      </div>
+      
+      <div class="team-card">
+        <div class="team-avatar">S</div>
+        <h3>Mr. Sooraj</h3>
+        <p class="team-role">Data Analyst & Digital Strategy Director</p>
+        <p class="team-desc">Data-driven campaign insights</p>
+      </div>
+      
+      <div class="team-card">
+        <div class="team-avatar">R</div>
+        <h3>Mr. Rajan</h3>
+        <p class="team-role">Field Operations Manager</p>
+        <p class="team-desc">Ground execution and team management</p>
+      </div>
+      
+      <div class="team-card">
+        <div class="team-avatar">A</div>
+        <h3>Mr. Ajeet</h3>
+        <p class="team-role">Campaign Manager</p>
+        <p class="team-desc">End-to-end campaign coordination</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <div class="logo">🗳️ POLITICAL RESEARCH INDIA</div>
+        <p>Shaping the future of political campaigning through innovation and data-driven strategies.</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-column">
+          <h4>Services</h4>
+          <a href="services.html">Booth Management</a>
+          <a href="services.html">Research & Surveys</a>
+          <a href="services.html">Digital Media</a>
+        </div>
+        <div class="footer-column">
+          <h4>Company</h4>
+          <a href="about.html">About Us</a>
+          <a href="projects.html">Our Work</a>
+          <a href="index.html#contact">Contact</a>
+        </div>
+        <div class="footer-column">
+          <h4>Connect</h4>
+          <a href="#">LinkedIn</a>
+          <a href="#">Twitter</a>
+          <a href="#">Instagram</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2035 Political Research India. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script src="/assets/js/main.js"></script>
 </body>
 </html>
-
