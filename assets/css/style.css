@@ -802,6 +802,38 @@ body {
   transition: all 0.3s ease;
 }
 
+/* submit button inline loader */
+.submit-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: opacity .18s ease;
+}
+.submit-btn[disabled] { opacity: 0.7; cursor: default; }
+
+.submit-btn .btn-loader {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255,255,255,0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  opacity: 0;
+  transform: scale(.9);
+  transition: opacity .18s ease, transform .2s ease;
+}
+.submit-btn.loading .btn-loader {
+  opacity: 1;
+  transform: scale(1);
+  animation: spin 0.9s linear infinite;
+}
+
+/* reuse existing spin keyframes if present; otherwise define */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
 .submit-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 30px rgba(11,61,145,0.3);
@@ -1156,11 +1188,63 @@ body {
 #careers .submit-btn { background: #0b3d91; color:#fff; padding:12px 18px; border-radius:10px; border:none; cursor:pointer; font-weight:600; }
 #careers .submit-btn:hover { opacity:0.95; }
 
-/* Make sure services grid adjusts to new card */
-.services-grid { gap: 20px; grid-auto-rows: auto; }
+/* Contact / Careers layout */
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 520px;
+  gap: 28px;
+  align-items: start;
+}
 
-/* Small screens */
-@media (max-width: 600px) {
-  #careers .enquiry-form { padding: 16px; }
-  #careers input, #careers select, #careers textarea { font-size: 15px; }
+/* left career column keeps form vertical */
+.career-column .contact-form,
+.inquiry-column .contact-form { background: #fff; padding: 18px; border-radius: 12px; box-shadow: 0 8px 30px rgba(11,61,145,0.04); }
+
+/* spacing */
+.career-column .contact-form { margin-bottom: 0; }
+.inquiry-column .contact-form { margin-bottom: 14px; }
+
+/* contact items horizontally below inquiry form */
+.contact-box { background: transparent; padding: 0; }
+.contact-items { display: flex; gap: 16px; align-items: center; justify-content: flex-start; flex-wrap: wrap; }
+.contact-item { display:flex; gap:10px; align-items:center; min-width: 140px; }
+.contact-item .contact-icon { font-size: 20px; }
+.contact-item .contact-details h4 { margin:0; font-size:13px; color:#0b3d91; }
+.contact-item .contact-details p { margin:0; font-size:14px; color:#334; }
+
+/* form titles */
+.form-title {
+  margin: 0 0 12px 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #0b3d91;
+}
+
+/* contact info row spans full grid width and places items from left to right */
+.contact-info-row {
+  grid-column: 1 / -1;
+  margin-top: 18px;
+}
+.contact-items {
+  display: flex;
+  justify-content: space-between; /* start at left, finish at right */
+  align-items: center;
+  gap: 18px;
+  padding: 12px 6px;
+  background: transparent;
+}
+.contact-item { display:flex; gap:12px; align-items:center; min-width: 140px; }
+.contact-item .contact-icon { font-size:20px; }
+.contact-item .contact-details h4 { margin:0; font-size:13px; color:#0b3d91; }
+.contact-item .contact-details p { margin:0; font-size:14px; color:#334; }
+
+/* keep the two-column layout but ensure the contact-info-row spans both on desktop */
+.contact-grid { display: grid; grid-template-columns: 1fr 520px; gap: 28px; align-items: start; }
+
+/* responsive: stack and left-align contact items */
+@media (max-width: 880px) {
+  .contact-grid { grid-template-columns: 1fr; }
+  .contact-info-row { grid-column: 1 / -1; }
+  .contact-items { flex-direction: column; align-items: flex-start; gap: 10px; padding: 8px 0; }
+  .contact-item { min-width: auto; }
 }

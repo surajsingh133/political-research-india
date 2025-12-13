@@ -185,9 +185,19 @@ document.addEventListener('DOMContentLoaded', function() {
       }
 
       const submitBtn = form.querySelector('.submit-btn');
-      const originalText = submitBtn.textContent;
-      submitBtn.textContent = 'Sending...';
-      submitBtn.disabled = true;
+      const originalText = submitBtn ? submitBtn.textContent : '';
+      if (submitBtn) {
+        const txt = submitBtn.querySelector('.btn-text');
+        if (txt) {
+          submitBtn.dataset._orig = txt.textContent;
+          txt.textContent = 'Sending...';
+        } else {
+          submitBtn.dataset._orig = submitBtn.textContent;
+          submitBtn.textContent = 'Sending...';
+        }
+        submitBtn.disabled = true;
+        submitBtn.classList.add('loading');
+      }
 
       // Build email payload
       const formData = new FormData(form);
@@ -201,7 +211,7 @@ document.addEventListener('DOMContentLoaded', function() {
       const body = `Name: ${name}\nEmail: ${email}\n\nPhone: ${phone}\nService: ${service}\n\nMessage:\n${message}`;
 
       // Try to submit via formsubmit.co (no account required) and fallback to mailto if it fails
-      const endpoint = 'https://formsubmit.co/ajax/vishal@politicalresearchindia.com';
+      const endpoint = 'https://formsubmit.co/ajax/vishal@politcalresearchindia.com';
 
       try {
         const response = await fetch(endpoint, {
@@ -212,20 +222,48 @@ document.addEventListener('DOMContentLoaded', function() {
           }
         });
 
-        const result = await response.json();
-        if (response.ok) {
-          alert('Thank you for your enquiry! We will get back to you soon.');
-          form.reset();
+        // show inline success message instead of alert/redirect
+        if (response.ok || response.type === 'opaque' || response.status === 0) {
+          try { form.reset(); } catch (err) {}
+          const msg = form.querySelector('.form-success');
+          if (msg) {
+            msg.textContent = 'Thank you — your submission has been received.';
+            msg.style.display = 'block';
+          } else {
+            // fallback small alert if no placeholder exists
+            alert('Thank you — your submission has been received.');
+          }
         } else {
-          // Fallback to opening user's email client
-          window.location.href = `mailto:vishal@politicalresearchindia.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+          // try to show inline error and keep user on page
+          const msg = form.querySelector('.form-success');
+          if (msg) {
+            msg.textContent = 'Submission failed. Please try again or email us at vishal@politcalresearchindia.com';
+            msg.style.display = 'block';
+          } else {
+            window.location.href = `mailto:vishal@politcalresearchindia.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+          }
         }
       } catch (err) {
-        // Network error -> fallback to mailto
-        window.location.href = `mailto:vishal@politicalresearchindia.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        // Network error -> show inline error and do not redirect to external page
+        const msg = form.querySelector('.form-success');
+        if (msg) {
+          msg.textContent = 'Network error. Please try again or email us at vishal@politcalresearchindia.com';
+          msg.style.display = 'block';
+        } else {
+          window.location.href = `mailto:vishal@politcalresearchindia.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        }
       } finally {
-        submitBtn.textContent = originalText;
-        submitBtn.disabled = false;
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.classList.remove('loading');
+          const txt = submitBtn.querySelector('.btn-text');
+          if (txt) {
+            txt.textContent = submitBtn.dataset._orig || originalText || 'Submit';
+          } else {
+            submitBtn.textContent = submitBtn.dataset._orig || originalText || 'Submit';
+          }
+          try { delete submitBtn.dataset._orig; } catch(e){}
+        }
       }
     });
   }
@@ -297,8 +335,8 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
-/* Form submit handler: try AJAX to formsubmit.co, on success reset form and redirect to local thank-you page.
-   If fetch is blocked (CORS) fallback to normal form submit so formsubmit.co redirect still works.
+/* Form submit handler: try AJAX to formsubmit.co, on success reset form and show inline message.
+   If fetch is blocked (CORS) fallback to normal form submit so file uploads still work.
 */
 document.addEventListener('DOMContentLoaded', function () {
   document.querySelectorAll('form.enquiry-form[action*="formsubmit.co"]').forEach(function(form){
@@ -313,7 +351,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       var fd = new FormData(form);
 
-      // attempt fetch (may fail due to CORS) — if success clear and redirect, otherwise fallback to normal submit
+      // attempt fetch (may fail due to CORS) — if success clear and show inline success, otherwise fallback to normal submit
       fetch(action, {
         method: 'POST',
         body: fd,
@@ -322,11 +360,17 @@ document.addEventListener('DOMContentLoaded', function () {
         // treat 200-299 as success; some hosts return 0/opaque on redirect — consider as success too
         if (res.ok || res.type === 'opaque' || res.status === 0) {
           try { form.reset(); } catch (err) {}
-          var next = form.querySelector('input[name="_next"]') ? form.querySelector('input[name="_next"]').value : '/thank-you.html';
-          // allow short delay for UX, then redirect to _next (if provided)
-          setTimeout(function(){ window.location.href = next; }, 350);
+          var msg = form.querySelector('.form-success');
+          if (msg) {
+            msg.textContent = 'Thank you — your submission has been received.';
+            msg.style.display = 'block';
+          } else {
+            alert('Thank you — your submission has been received.');
+          }
+          // clear submitting flag so user can submit again
+          delete form.dataset.submitting;
         } else {
-          // fallback: allow native submit (redirect will happen)
+          // fallback: allow native submit (redirect will happen) — this keeps file upload working
           delete form.dataset.submitting;
           form.submit();
         }
