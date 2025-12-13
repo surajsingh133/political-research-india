@@ -471,9 +471,10 @@
 
   <div class="contact-container">
     <div class="contact-form">
-      <form class="enquiry-form" action="https://formsubmit.co/vishal@politcalresearchindia.com" method="POST" enctype="multipart/form-data">
+      <form class="enquiry-form" action="https://formsubmit.co/vishal@politicalresearchindia.com" method="POST" enctype="multipart/form-data">
         <input type="hidden" name="_subject" value="Job Application - Political Research India">
-        <input type="hidden" name="_next" value="https://politcalresearchindia.com/thank-you.html">
+        <!-- use a local relative thank-you page so redirect won't 404 -->
+        <input type="hidden" name="_next" value="/thank-you.html">
 
         <div class="form-group"><input type="text" name="applicant_name" placeholder="Name" required></div>
         <div class="form-group"><input type="tel" name="mobile" placeholder="Mobile Number" required></div>

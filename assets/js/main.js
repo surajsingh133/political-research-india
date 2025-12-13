@@ -297,6 +297,50 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
+/* Form submit handler: try AJAX to formsubmit.co, on success reset form and redirect to local thank-you page.
+   If fetch is blocked (CORS) fallback to normal form submit so formsubmit.co redirect still works.
+*/
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('form.enquiry-form[action*="formsubmit.co"]').forEach(function(form){
+    form.addEventListener('submit', function (e) {
+      // prevent double handling
+      if (form.dataset.submitting === '1') return;
+      var action = form.getAttribute('action');
+      if (!action || action.indexOf('formsubmit.co') === -1) return; // nothing to do
+
+      e.preventDefault();
+      form.dataset.submitting = '1';
+
+      var fd = new FormData(form);
+
+      // attempt fetch (may fail due to CORS) — if success clear and redirect, otherwise fallback to normal submit
+      fetch(action, {
+        method: 'POST',
+        body: fd,
+        mode: 'cors'
+      }).then(function (res) {
+        // treat 200-299 as success; some hosts return 0/opaque on redirect — consider as success too
+        if (res.ok || res.type === 'opaque' || res.status === 0) {
+          try { form.reset(); } catch (err) {}
+          var next = form.querySelector('input[name="_next"]') ? form.querySelector('input[name="_next"]').value : '/thank-you.html';
+          // allow short delay for UX, then redirect to _next (if provided)
+          setTimeout(function(){ window.location.href = next; }, 350);
+        } else {
+          // fallback: allow native submit (redirect will happen)
+          delete form.dataset.submitting;
+          form.submit();
+        }
+      }).catch(function () {
+        // network/CORS error — fallback to native submit
+        delete form.dataset.submitting;
+        form.submit();
+      });
+    });
+  });
+});
+
+/* ...existing code... */
+
 // ===== SMOOTH SCROLL FOR ANCHOR LINKS =====
 // Unified smooth scroll for same-page anchors with header offset and mobile nav close
 document.addEventListener('DOMContentLoaded', function() {
