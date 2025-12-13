@@ -383,117 +383,147 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
+/* Simplified: remove slide-in popup. Only create sticky contact widget site-wide.
+*/
+(function(){
+  function createContactFloating() {
+    if (document.getElementById('contact-floating')) return;
+    const el = document.createElement('div');
+    el.id = 'contact-floating';
+    el.className = 'contact-floating';
+    el.innerHTML = `
+      <div class="cf-item cf-email" title="Email">
+        <a href="mailto:vishal@politcalresearchindia.com" aria-label="Email vishal@politcalresearchindia.com">📧</a>
+        <div class="cf-detail">vishal@politcalresearchindia.com</div>
+      </div>
+      <div class="cf-item cf-phone" title="Call">
+        <a href="tel:+918928050190" aria-label="Call +91-8928050190">📞</a>
+        <div class="cf-detail">+91-8928050190</div>
+      </div>
+    `;
+    document.body.appendChild(el);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', createContactFloating);
+  } else {
+    createContactFloating();
+  }
+})();
+
 /* ...existing code... */
 
-// ===== SMOOTH SCROLL FOR ANCHOR LINKS =====
-// Unified smooth scroll for same-page anchors with header offset and mobile nav close
-document.addEventListener('DOMContentLoaded', function() {
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-      const href = this.getAttribute('href');
-      // If href is just '#' or empty, ignore
-      if (!href || href === '#') return;
+document.addEventListener('DOMContentLoaded', function () {
+  var submissionFrame = document.getElementById('submission-frame');
 
-      const target = document.querySelector(href);
-      if (!target) return; // no in-page target, let default behavior (e.g., links to other pages)
+  // helper: show loader on form
+  function setFormLoading(form, isLoading, label) {
+    var btn = form.querySelector('button[type="submit"]');
+    if (!btn) return;
+    if (isLoading) {
+      btn.disabled = true;
+      btn.classList.add('loading');
+      var t = btn.querySelector('.btn-text');
+      if (t) { btn.dataset._orig = t.textContent; t.textContent = label || 'Sending...'; }
+    } else {
+      btn.disabled = false;
+      btn.classList.remove('loading');
+      var t = btn.querySelector('.btn-text');
+      if (t) { t.textContent = btn.dataset._orig || 'Submit'; delete btn.dataset._orig; }
+    }
+  }
 
-      e.preventDefault();
+  // handle iframe load (treat as successful native submit)
+  if (submissionFrame) {
+    submissionFrame.addEventListener('load', function () {
+      var waitId = submissionFrame.dataset.waiting;
+      if (!waitId) return;
+      var form = document.querySelector('form.enquiry-form[data-submission-id="' + waitId + '"]');
+      if (!form) { delete submissionFrame.dataset.waiting; return; }
 
-      const headerEl = document.querySelector('.header');
-      const offset = headerEl ? headerEl.offsetHeight + 12 : 80;
-      const top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+      // success: reset and show inline/popup
+      try { form.reset(); } catch (e) {}
+      setFormLoading(form, false);
+      var msg = form.querySelector('.form-success');
+      if (msg) { msg.textContent = 'Thank you — your submission has been received.'; msg.style.display = 'block'; }
+      // show slide popup if available
+      if (window.__PRI_showSlidePopup) window.__PRI_showSlidePopup(msg ? msg.textContent : 'Thanks for submitting');
+      delete submissionFrame.dataset.waiting;
+      delete form.dataset.submissionId;
+    }, true);
+  }
 
-      window.scrollTo({ top, behavior: 'smooth' });
+  // main submit handler
+  document.querySelectorAll('form.enquiry-form').forEach(function (form) {
+    // ensure correct action (non-ajax)
+    var action = form.getAttribute('action') || '';
+    // prefer the normal endpoint (not /ajax)
+    form.setAttribute('action', action.replace('/ajax/', '/'));
 
-      // Close mobile nav if open
-      const nav = document.querySelector('.header-nav');
-      const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
-      if (nav && nav.classList.contains('active')) nav.classList.remove('active');
-      if (mobileMenuBtn && mobileMenuBtn.classList.contains('active')) mobileMenuBtn.classList.remove('active');
-    });
-  });
-});
+    // if the form has file inputs -> target iframe (native submit)
+    var hasFile = !!form.querySelector('input[type="file"]');
 
-// ===== PARALLAX EFFECT FOR HERO =====
-document.addEventListener('DOMContentLoaded', function() {
-  const hero = document.querySelector(".hero-slider");
-  if (hero) {
-    let ticking = false;
+    // always set target to iframe for reliability with uploads
+    if (hasFile && submissionFrame) {
+      form.setAttribute('target', 'submission-frame');
+    }
 
-    window.addEventListener("scroll", () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          const scrolled = window.pageYOffset;
-          const parallaxElements = document.querySelectorAll(".slide-bg");
-          
-          parallaxElements.forEach(element => {
-            const speed = 0.5;
-            element.style.transform = `translateY(${scrolled * speed}px) scale(1.05)`;
-          });
+    form.addEventListener('submit', function (e) {
+      // prevent duplicate handling
+      if (form.dataset.submitting === '1') return;
+      form.dataset.submitting = '1';
 
-          ticking = false;
-        });
-        ticking = true;
+      // basic required fields check (client-side)
+      var required = form.querySelectorAll('[required]');
+      for (var i = 0; i < required.length; i++) {
+        if (!required[i].value || required[i].value.trim() === '') {
+          required[i].focus();
+          form.dataset.submitting = '';
+          return e.preventDefault();
+        }
       }
+
+      // show loader
+      setFormLoading(form, true, 'Sending...');
+
+      if (hasFile && submissionFrame) {
+        // native submit to iframe — do not preventDefault
+        // mark form with id so iframe load can map response
+        var id = 's' + Date.now();
+        form.dataset.submissionId = id;
+        submissionFrame.dataset.waiting = id;
+        // allow native submit to proceed (files preserved)
+        delete form.dataset.submitting;
+        return; // native submit continues
+      }
+
+      // no files: use fetch to standard endpoint (CORS allowed)
+      e.preventDefault();
+      var fd = new FormData(form);
+      // use form.action (ensure not /ajax/ unless you want it)
+      fetch(form.action, {
+        method: 'POST',
+        body: fd,
+        headers: { 'Accept': 'application/json' },
+        mode: 'cors'
+      }).then(function (res) {
+        if (res.ok || res.type === 'opaque' || res.status === 0) {
+          try { form.reset(); } catch (e) {}
+          var msg = form.querySelector('.form-success');
+          if (msg) { msg.textContent = 'Thank you — your submission has been received.'; msg.style.display = 'block'; }
+          console.log('Form submitted via fetch; no popup used.');
+        } else {
+          // fallback: show inline error and allow manual retry
+          var msg = form.querySelector('.form-success');
+          if (msg) { msg.textContent = 'Submission failed. Please try again or email vishal@politcalresearchindia.com'; msg.style.display = 'block'; }
+        }
+      }).catch(function () {
+        var msg = form.querySelector('.form-success');
+        if (msg) { msg.textContent = 'Network error. Please try again or email vishal@politcalresearchindia.com'; msg.style.display = 'block'; }
+      }).finally(function () {
+        setFormLoading(form, false);
+        delete form.dataset.submitting;
+      });
     });
-  }
-});
-
-// ===== IMAGE LOADING HANDLER =====
-function handleImageLoading() {
-  const images = document.querySelectorAll('.slide-bg, .portfolio-image');
-  
-  images.forEach(img => {
-    // Add loading class
-    img.classList.add('loading');
-    
-    // Check if image is already loaded
-    const bgImage = img.style.backgroundImage;
-    if (bgImage) {
-      const imageUrl = bgImage.replace(/url\(['"]?(.*?)['"]?\)/i, '$1');
-      const tempImage = new Image();
-      
-      tempImage.onload = function() {
-        img.classList.remove('loading');
-      };
-      
-      tempImage.onerror = function() {
-        img.classList.remove('loading');
-        console.warn('Failed to load image:', imageUrl);
-      };
-      
-      tempImage.src = imageUrl;
-    }
   });
-}
-
-// Initialize image loading
-document.addEventListener('DOMContentLoaded', function() {
-  handleImageLoading();
 });
-
-// ===== WINDOW RESIZE HANDLER =====
-window.addEventListener('resize', function() {
-  // Close mobile menu on resize to desktop
-  if (window.innerWidth > 768) {
-    const nav = document.querySelector('.header-nav');
-    const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
-    
-    if (nav && nav.classList.contains('active')) {
-      nav.classList.remove('active');
-      mobileMenuBtn.classList.remove('active');
-    }
-  }
-});
-
-// ===== ERROR HANDLING =====
-window.addEventListener('error', function(e) {
-  console.error('JavaScript Error:', e.error);
-});
-
-// Add loading state for better UX
-document.addEventListener('DOMContentLoaded', function() {
-  document.body.classList.add('loaded');
-});
-
-console.log('Political Research India - Website initialized successfully');

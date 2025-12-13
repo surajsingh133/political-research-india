@@ -1248,3 +1248,170 @@ body {
   .contact-items { flex-direction: column; align-items: flex-start; gap: 10px; padding: 8px 0; }
   .contact-item { min-width: auto; }
 }
+
+/* Slide-in popup (bottom-center) */
+.slide-popup {
+  position: fixed;
+  left: 50%;
+  bottom: 18px;
+  transform: translate(-50%, 160%);
+  background: linear-gradient(180deg,#ffffff,#f7fbff);
+  border-radius: 12px;
+  padding: 12px 16px;
+  box-shadow: 0 18px 50px rgba(11,61,145,0.12);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 300px;
+  max-width: 420px;
+  z-index: 120000;
+  opacity: 0;
+  transition: transform .36s cubic-bezier(.2,.9,.2,1), opacity .28s ease;
+  border: 1px solid rgba(11,61,145,0.06);
+}
+.slide-popup.visible {
+  transform: translate(-50%, 0);
+  opacity: 1;
+}
+.slide-popup .slide-popup-inner {
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.slide-popup .slide-popup-icon {
+  width:44px;
+  height:44px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#18a463,#0b8a51);
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:20px;
+  flex-shrink:0;
+  box-shadow: 0 6px 18px rgba(11,61,145,0.08);
+}
+.slide-popup .slide-popup-text strong { display:block; color:#0b3d91; font-size:15px; }
+.slide-popup .slide-popup-message { color:#345; font-size:13px; margin-top:3px; }
+
+/* close button */
+.slide-popup .slide-popup-close {
+  position:absolute;
+  right:8px;
+  top:6px;
+  border:0;
+  background:transparent;
+  font-size:18px;
+  color:#62748a;
+  cursor:pointer;
+  padding:6px;
+  line-height:1;
+}
+
+/* Sticky contact floating (bottom-right) */
+.contact-floating {
+  position: fixed;
+  right: 16px;
+  bottom: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 130000;
+}
+.contact-floating .cf-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,0.98);
+  border-radius: 999px;
+  padding: 8px 10px;
+  box-shadow: 0 10px 30px rgba(11,61,145,0.06);
+  transition: transform .18s ease, box-shadow .18s ease;
+  cursor: pointer;
+  overflow: hidden;
+  min-width: 44px;
+  white-space: nowrap;
+}
+.contact-floating .cf-item a { text-decoration: none; color: inherit; font-size:18px; display:inline-block; }
+.contact-floating .cf-item .cf-detail {
+  max-width: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-width .22s ease, opacity .22s ease, padding .22s ease;
+  font-size:13px;
+  color:#0b3d91;
+}
+.contact-floating .cf-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(11,61,145,0.12);
+}
+.contact-floating .cf-item:hover .cf-detail {
+  padding-left:8px;
+  max-width: 220px;
+  opacity: 1;
+}
+
+/* small screens: hide details to save space */
+@media (max-width: 420px) {
+  .contact-floating { right: 10px; bottom: 12px; gap:8px; }
+  .contact-floating .cf-item .cf-detail { display:none; }
+}
+
+/* Override / fixes appended */
+
+ /* ensure background-clip uses standard property before -webkit */
+ .logo-icon, .stat-number, .section-title {
+   background-clip: text;
+   -webkit-background-clip: text;
+   color: transparent;
+   -webkit-text-fill-color: transparent;
+ }
+
+ /* Make contact layout deterministic (final override) */
+ .contact-grid {
+   grid-template-columns: 1fr 520px !important;
+   gap: 28px !important;
+   align-items: start !important;
+ }
+
+ /* contact info row spans both columns and items stretch from left to right */
+ .contact-info-row { grid-column: 1 / -1 !important; margin-top: 18px !important; }
+ .contact-items {
+   display: flex !important;
+   justify-content: space-between !important;
+   align-items: center !important;
+   gap: 18px !important;
+   padding: 12px 6px !important;
+ }
+
+ /* keep floating contact behavior */
+ .contact-floating { right: 16px; bottom: 18px; }
+ .contact-floating .cf-item .cf-detail { transition: max-width .22s ease, opacity .22s ease, padding .22s ease; }
+
+ /* adjust body top padding if header is 80px (change only if you want less space) */
+ /* body { padding-top: 80px !important; } */
+
+ /* small screens: keep contact details hidden to save space */
+ @media (max-width: 420px) {
+   .contact-floating .cf-item .cf-detail { display: none !important; }
+ }
+
+/* make sticky email catchy */
+.contact-floating .cf-item.cf-email {
+  background: linear-gradient(90deg, #ff416c 0%, #ff4b2b 100%);
+  color: #fff;
+  box-shadow: 0 8px 30px rgba(255,75,43,0.18);
+  border-radius: 999px;
+}
+.contact-floating .cf-item.cf-email a { color: #fff; font-weight:700; }
+.contact-floating .cf-item.cf-email .cf-detail { color: rgba(255,255,255,0.95); }
+
+/* subtle hover pulse for emphasis */
+@keyframes cf-pulse {
+  0% { transform: translateY(0); box-shadow: 0 8px 30px rgba(255,75,43,0.12); }
+  50% { transform: translateY(-2px); box-shadow: 0 18px 50px rgba(255,75,43,0.18); }
+  100% { transform: translateY(0); box-shadow: 0 8px 30px rgba(255,75,43,0.12); }
+}
+.contact-floating .cf-item.cf-email:hover {
+  animation: cf-pulse 1.6s ease-in-out infinite;
+}
