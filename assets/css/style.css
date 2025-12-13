@@ -1146,19 +1146,21 @@ body {
   font-size: 14px;
 }
 
-/* Responsive tweaks */
-@media (max-width: 768px) {
-  .team-grid {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 16px;
-  }
-  .team-card {
-    min-height: 220px;
-    padding: 20px;
-  }
-  .team-avatar {
-    width: 80px;
-    height: 80px;
-    font-size: 26px;
-  }
+/* Careers / Job application form */
+#careers { padding: 48px 20px; background: #f8fbff; }
+#careers .enquiry-form { max-width: 820px; margin: 0 auto; padding: 22px; background: #fff; border-radius: 12px; box-shadow: 0 8px 30px rgba(11,61,145,0.04); }
+#careers .form-group { margin-bottom: 14px; }
+#careers input[type="text"], #careers input[type="email"], #careers input[type="tel"], #careers select, #careers textarea { width: 100%; padding: 12px 14px; border: 1px solid #e6e9f2; border-radius: 8px; font-size: 15px; }
+#careers .file-label { display:block; margin-bottom:6px; font-weight:600; color:#0b3d91; }
+#careers input[type="file"] { width:100%; padding:8px 12px; border-radius:8px; border:1px solid #e6e9f2; background:#fff; }
+#careers .submit-btn { background: #0b3d91; color:#fff; padding:12px 18px; border-radius:10px; border:none; cursor:pointer; font-weight:600; }
+#careers .submit-btn:hover { opacity:0.95; }
+
+/* Make sure services grid adjusts to new card */
+.services-grid { gap: 20px; grid-auto-rows: auto; }
+
+/* Small screens */
+@media (max-width: 600px) {
+  #careers .enquiry-form { padding: 16px; }
+  #careers input, #careers select, #careers textarea { font-size: 15px; }
 }
