@@ -163,6 +163,10 @@ document.addEventListener('DOMContentLoaded', function() {
 document.addEventListener('DOMContentLoaded', function() {
   const form = document.querySelector('.enquiry-form');
   if (form) {
+    // if this form has file inputs, do not handle via AJAX (files won't be sent). Let native submit/iframe handler run.
+    if (form.querySelector('input[type="file"]')) {
+      return;
+    }
     form.addEventListener('submit', async function(e) {
       e.preventDefault();
 
